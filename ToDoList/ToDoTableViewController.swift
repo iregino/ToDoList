@@ -2,13 +2,13 @@
 //  ToDoTableViewController.swift
 //  ToDoList
 //
-//  Created by student14 on 4/2/19.
-//  Copyright © 2019 student14. All rights reserved.
+//  Created by Ian Regino on 4/2/19.
+//  Copyright © 2019 Ian Regino. All rights reserved.
 //
 
 import UIKit
 
-class ToDoTableViewController: UITableViewController {
+class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     
     //Variables
     var todos = [ToDo]()
@@ -21,8 +21,18 @@ class ToDoTableViewController: UITableViewController {
         } else {
             todos = ToDo.loadSampleToDos()
         }
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+//        self.navigationItem.leftBarButtonItem = self.editButtonItem
     }
+    
+    func checkmarkTapped(sender: ToDoCell) {
+        if let indexPath = tableView.indexPath(for: sender) {
+            var todo = todos[indexPath.row]
+            todo.isComplete = !todo.isComplete
+            todos[indexPath.row] = todo
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        } //end if-let
+    } //end checkmarkTapped()
 
     // MARK: - Table view data source
 
@@ -36,57 +46,64 @@ class ToDoTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell") else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier") as? ToDoCell else {
             fatalError("Could not dequeue a cell")
         }
+        cell.delegate = self
+        
         let todo = todos[indexPath.row]
-        cell.textLabel?.text = todo.title
+        cell.titleLabel.text = todo.title
+        cell.isCompleteButton.isSelected = todo.isComplete
         return cell
     } //end tableView(:cellForRowAt:)
     
-    /*
-    // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
         return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
+    } //end tableView(:canEditRowAt:)
+    
+    // Delete specific to do item
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
+        //Delete the row from the data source
+        if editingStyle == .delete  {
+            todos.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
+        } //end if
+//    } else if editingStyle == .insert {
+//    // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//    }
+    } //end tableView(:editingStyle:)
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
 
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
+    
     // MARK: - Navigation
+    
+    @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
+        guard segue.identifier == "saveUnwind" else { return }
+        let sourceVC = segue.source as! ToDoDetailViewController
+        
+        if let todo = sourceVC.todo {
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                todos[selectedIndexPath.row] = todo
+                tableView.reloadRows(at: [selectedIndexPath], with: .none)
+            } else {
+                let newIndexPath = IndexPath(row: todos.count, section: 0)
+                todos.append(todo)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            } //end if-let
+        } //end if-let
+    } //end unwindToToDoList()
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
+    // Preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+        
+        if segue.identifier == "showDetails" {
+            let todoDetailVC = segue.destination as! ToDoDetailViewController
+            let indexPath = tableView.indexPathForSelectedRow!
+            let selectedToDo = todos[indexPath.row]
+            todoDetailVC.todo = selectedToDo
+        } //if let
+    } //end prepare(for segue:)
+    
 
-}
+} //end ToDoTableViewController{}

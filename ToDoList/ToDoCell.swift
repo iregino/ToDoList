@@ -19,6 +19,7 @@ class ToDoCell: UITableViewCell {
     
     var delegate: ToDoCellDelegate?
     
+    // Delegate method when complete button is tapped
     @IBAction func completeButtonTapped(_ sender: UIButton) {
         delegate?.checkmarkTapped(sender: self)
     }

@@ -25,6 +25,7 @@ class ToDoDetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Load todo details on the view page
         if let todo = todo {
             navigationItem.title = "To Do Item"
             titleTextField.text = todo.title
@@ -56,6 +57,7 @@ class ToDoDetailViewController: UITableViewController {
     } //end returnPressed()
     
     @IBAction func isCompleteButtonTapped(_ sender: UIButton) {
+        // Uncheck/check button when user taps on it
         isCompleteButton.isSelected = !isCompleteButton.isSelected
     } //end isCompleteButtonTapped()
     
@@ -70,6 +72,7 @@ class ToDoDetailViewController: UITableViewController {
     
     // MARK: - Table view data source
 
+    // Adjust row height for due date cell and notes cell
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let normalCellHeight = CGFloat(44)
         let largeCellHeight = CGFloat(200)
@@ -84,6 +87,7 @@ class ToDoDetailViewController: UITableViewController {
         } //end switch
     } // end tableView(:heighForRowAt:)
     
+    // Update tableView when due date is selected
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         switch (indexPath) {
@@ -113,4 +117,4 @@ class ToDoDetailViewController: UITableViewController {
     } //end prepare(for segue:)
 
 
-}
+} //end ToDoDetailViewController{}

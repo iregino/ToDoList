@@ -17,10 +17,8 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         super.viewDidLoad()
 
         if let savedToDos = ToDo.loadToDos() {
-            todos = savedToDos //loas saved todos from documents directory
-        } else {
-            todos = ToDo.loadSampleToDos() //load sample todos
-        } //end if-let
+            todos = savedToDos //load saved todos from documents directory
+        }
         
     } //end viewDidLoad
     
@@ -47,6 +45,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         return todos.count
     } //end tableView(:numberOfRowsInSection:)
 
+    // Populate table cell with todo values
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier") as? ToDoCell else {

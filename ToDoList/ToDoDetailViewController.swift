@@ -66,7 +66,11 @@ class ToDoDetailViewController: UITableViewController {
     } //end datePickerChanged()
     
     func updateDueDateLabel(date: Date) {
+        
         dueDateLabel.text = ToDo.dueDateFormatter.string(from: date)
+        if todo?.dueDate ?? Date() < Date() && todo?.isComplete == false {
+            dueDateLabel.textColor = .red
+        } //end if
     } //end updateDueDateLabel()
     
     

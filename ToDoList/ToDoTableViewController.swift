@@ -16,6 +16,8 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.separatorColor = UIColor.cyan
+        
         if let savedToDos = ToDo.loadToDos() {
             todos = savedToDos //load saved todos from documents directory
         }
@@ -25,6 +27,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     //MARK: - Table Cell Delegate Method
     
     func checkmarkTapped(sender: ToDoCell) {
+        
         if let indexPath = tableView.indexPath(for: sender) {
             var todo = todos[indexPath.row]
             todo.isComplete = !todo.isComplete
@@ -56,8 +59,20 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         let todo = todos[indexPath.row]
         cell.titleLabel.text = todo.title
         cell.isCompleteButton.isSelected = todo.isComplete
+        if todo.dueDate < Date() && !todo.isComplete {
+            cell.titleLabel.textColor = .red
+        }
         return cell
     } //end tableView(:cellForRowAt:)
+    
+//    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        
+//        // Change cell color to alert user when to-do due date is past and not completed
+//        if todos[indexPath.row].dueDate < Date() && !todos[indexPath.row].isComplete {
+//            cell.backgroundColor = UIColor.init(red: CGFloat(255)/255, green: CGFloat(126)/255, blue: CGFloat(184)/255, alpha: 1.0)
+//        }//end if
+//        
+//    } //end tableView(:willDisplay cell:)
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -65,6 +80,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     
     // Delete specific to do item
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
         //Delete the row from the data source
         if editingStyle == .delete  {
             todos.remove(at: indexPath.row)
